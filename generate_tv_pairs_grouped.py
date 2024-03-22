@@ -24,7 +24,14 @@ def filter_and_group_pairs(pairs):
     quote_assets = ['USDT', 'USDC', 'BTC']
     grouped_pairs = {quote_asset: [] for quote_asset in quote_assets}
 
-
+    for pair in pairs:
+        if pair['status'] == 'TRADING' and pair['isSpotTradingAllowed']:
+            symbol = pair['symbol']
+            for quote_asset in quote_assets:
+                if symbol.endswith(quote_asset):
+                    formatted_pair = f"BINANCE:{symbol}"
+                    grouped_pairs[quote_asset].append(formatted_pair)
+                    break
 
     return grouped_pairs
 
