@@ -1,0 +1,36 @@
+name: Daily TradingView Pair List Generation
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
+
+jobs:
+  generate-and-commit-pair-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run script
+        run: python generate_tv_pairs_grouped.py
+      
+      - name: Configure git
+        run: |
+          git config --global user.email "yakamozz1996@gmail.com"
+          git config --global user.name "ali-cakici-dev"
+      
+      - name: Commit and push if changes
+        run: |
+          git add .
+          git commit -m "Automated update of trading pairs list" -a || echo "No changes to commit"
+          git push
