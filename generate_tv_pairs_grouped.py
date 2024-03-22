@@ -5,8 +5,16 @@ def fetch_binance_pairs():
     url = "https://api.binance.com/api/v3/exchangeInfo"
     try:
         response = requests.get(url)
-        data = response.json()
-        return data['symbols']
+        if response.status_code == 200:
+            data = response.json()
+            if 'symbols' in data:
+                return data['symbols']
+            else:
+                print("Unexpected response format:", data)
+                return []
+        else:
+            print(f"Error fetching Binance pairs: HTTP {response.status_code}")
+            return []
     except Exception as e:
         print(f"Error fetching Binance pairs: {e}")
         return []
