@@ -42,7 +42,7 @@ def save_to_file(grouped_pairs, filename="tradingview_pairs_grouped.txt"):
         return
     with open(filename, 'w') as file:
         for quote_asset, pairs in grouped_pairs.items():
-            if pairs:
+            if pairs and quote_asset:
                 file.write(f"{quote_asset} pairs:\n")
                 for pair in pairs:
                     file.write(f"  {pair}\n")
