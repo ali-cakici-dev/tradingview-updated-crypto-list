@@ -24,14 +24,7 @@ def filter_and_group_pairs(pairs):
     quote_assets = ['USDT', 'USDC', 'BTC']
     grouped_pairs = {quote_asset: [] for quote_asset in quote_assets}
 
-    for pair in pairs:
-        if pair['status'] == 'TRADING' and pair['isSpotTradingAllowed']:
-            symbol = pair['symbol']
-            for quote_asset in quote_assets:
-                if symbol.endswith(quote_asset):
-                    formatted_pair = f"BINANCE:{symbol}"
-                    grouped_pairs[quote_asset].append(formatted_pair)
-                    break
+
 
     return grouped_pairs
 
@@ -39,9 +32,7 @@ def filter_and_group_pairs(pairs):
 def save_to_file(grouped_pairs, filename="tradingview_pairs_grouped.txt"):
     with open(filename, 'w') as file:
         for quote_asset, pairs in grouped_pairs.items():
-            if len(pairs) == 0:
-                continue
-            if pairs and quote_asset:
+            if len(pairs) > 0:
                 file.write(f"{quote_asset} pairs:\n")
                 for pair in pairs:
                     file.write(f"  {pair}\n")
@@ -51,8 +42,19 @@ def save_to_file(grouped_pairs, filename="tradingview_pairs_grouped.txt"):
 
 def main():
     binance_pairs = fetch_binance_pairs()
+
+    if not binance_pairs:
+        print("Failed to fetch pairs from Binance or no pairs found.")
+        return
+
     grouped_pairs = filter_and_group_pairs(binance_pairs)
+
+    if not any(grouped_pairs.values()):
+        print("No pairs were grouped. Check the filtering criteria.")
+        return
+
     save_to_file(grouped_pairs)
+    print("Operation completed successfully.")
 
 
 if __name__ == "__main__":
