@@ -37,6 +37,9 @@ def filter_and_group_pairs(pairs):
 
 
 def save_to_file(grouped_pairs, filename="tradingview_pairs_grouped.txt"):
+    if len(grouped_pairs) == 0:
+        print("No pairs to save.")
+        return
     with open(filename, 'w') as file:
         for quote_asset, pairs in grouped_pairs.items():
             if pairs:
